@@ -10,8 +10,13 @@
           <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'about' %}">about</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'about' %}">About</a>
         </li>
+        {% if request.user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'profile' user.id %}">Profile</a>
+          </li>
+        {% endif %}
       </ul>
       <form class="d-flex" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
