@@ -21,7 +21,7 @@ class Book(models.Model):
     picture = models.CharField(max_length=300)
     name = models.CharField(max_length=200)
     author = models.ForeignKey(Author, on_delete=models.SET("Unknown Author"))
-    genre = models.ManyToManyField(Genre, related_name='genres', blank=True)
+    genre = models.ManyToManyField(Genre, related_name='books', blank=True)
     description = models.TextField(max_length=1000)
     content = models.CharField(max_length=500)
     def __str__(self):
