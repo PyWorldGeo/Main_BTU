@@ -17,19 +17,13 @@ def home(request):
     genres = Genre.objects.all()
     heading = "Library"
     context = {"books": books, "genres": genres, 'heading': heading}
+    print(books[0].users.all())
     return render(request, 'base/home.html', context)
 
 
 def about(request):
     return render(request, 'base/about.html')
 
-
-# def profile(request):
-#     user = User.objects.get(id=1)
-#     books = user.books.all()
-#
-#     context = {"books": books}
-#     return render(request, 'base/profile.html', context)
 
 def profile(request, pk):
     user = User.objects.get(id=pk)

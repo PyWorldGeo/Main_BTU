@@ -29,7 +29,7 @@ class Book(models.Model):
 
 
 class User(AbstractUser):
-    books = models.ManyToManyField(Book, related_name='books', blank=True)
+    books = models.ManyToManyField(Book, related_name='users', blank=True)
     # avatar = models.ImageField(null=True, default="avatar.svg")
 
 
