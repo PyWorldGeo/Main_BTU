@@ -17,6 +17,26 @@
             <a class="nav-link active" aria-current="page" href="{% url 'profile' user.id %}">Profile</a>
           </li>
         {% endif %}
+
+        <li class="nav-item">
+          <!-- Logged In -->
+          {% if request.user.is_authenticated %}
+
+            <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">
+              <p>Logout</p>
+            </a>
+
+          {% else %}
+
+          <!-- Not Logged In -->
+          <a class="nav-link active" aria-current="page" href="{% url 'login' %}">
+            <p>Login</p>
+          </a>
+
+          {% endif %}
+        </li>
+
+
       </ul>
       <form class="d-flex" role="search" action="">
         <input name="q" class="form-control me-2" type="search" placeholder="Search Books" aria-label="Search">
@@ -24,4 +44,5 @@
       </form>
     </div>
   </div>
+
 </nav>

@@ -28,10 +28,8 @@ class Book(models.Model):
         return f"{self.name} _ {self.author}"
 
 
-
-
-
-
 class User(AbstractUser):
     books = models.ManyToManyField(Book, related_name='books', blank=True)
     # avatar = models.ImageField(null=True, default="avatar.svg")
+
+
