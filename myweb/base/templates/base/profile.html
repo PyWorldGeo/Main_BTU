@@ -5,12 +5,16 @@
 {% endblock %}
 
 {%block content%}
-    <h1> {{ word }} </h1>
+    <style>
+        .home-container {
+            display: grid;
+            grid-template-columns: 1fr 3fr 1fr;
+        }
 
-    <div class="object">
-        <h1 class="main" id="new">My Books:</h1>
-    </div>
-    <br>
-    <hr>
+        .genres {
+            margin: 50px 30px;
+        }
+    </style>
+
     {% include 'base/books.html' %}
 {% endblock %}
