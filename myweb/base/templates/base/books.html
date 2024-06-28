@@ -7,6 +7,13 @@
         .genres {
             margin: 50px 30px;
         }
+
+
+        .row{
+            display: flex;
+            flex-direction: row;
+          }
+
     </style>
 
 
@@ -29,16 +36,20 @@
                 <h1 class="main" id="new">{{ heading }}:</h1>
             </div>
             <br>
-            <div style="display: flex;">
+            <div class="row">
                 {% for book in books %}
-                    <div class="card" style="width: 14rem; margin-left: 30px;">
+                    <div class="card" style="width: 14rem; margin: 30px 30px;">
                       <img  src="{{book.picture}}" class="card-img-top" alt="...">
                       <div class="card-body">
                         <h5 class="card-title">{{book.name}}</h5>
                         <p class="card-text">{{book.description |slice:":30"}}</p>
                         <a href="{% url 'reading' book.id %}" target=”_blank” class="btn btn-primary">Read</a>
                         {% if request.user.is_authenticated %}
-                            <a href="{% url 'adding' book.id %}" target=”_blank” class="btn btn-primary">Add</a>
+                            {% if book in request.user.books.all %}
+                                <a href="{% url 'delete' book.id %}" target=”_blank” class="btn btn-primary">Delete</a>
+                            {% else %}
+                                <a href="{% url 'adding' book.id %}" target=”_blank” class="btn btn-primary">Add</a>
+                            {% endif %}
                         {% endif %}
                       </div>
                     </div>

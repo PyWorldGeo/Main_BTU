@@ -75,6 +75,20 @@ def login_page(request):
     context = {"page": page}
     return render(request, "base/login_register.html", context)
 
+
+
+def delete(request, pk):
+    book = Book.objects.get(id=pk)
+
+    # if request.user != room.host:
+    #     return HttpResponse("<h1>You Don't Have Permission!</h1>")
+
+    if request.method == "POST":
+        request.user.books.remove(book)
+        return redirect('profile', request.user.id)
+    return render(request, 'base/delete.html', {'obj': book})
+
+
 def logout_user(request):
     logout(request)
     return redirect('home')
