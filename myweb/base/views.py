@@ -20,7 +20,7 @@ def home(request):
     print(books[0].users.all())
     return render(request, 'base/home.html', context)
 
-
+@login_required(login_url='login')
 def about(request):
     return render(request, 'base/about.html')
 
