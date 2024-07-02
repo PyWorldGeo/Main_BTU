@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import MyUserCreationForm
+from .forms import MyUserCreationForm, BookForm
 
 # Create your views here.
 def home(request):
@@ -17,7 +17,7 @@ def home(request):
     genres = Genre.objects.all()
     heading = "Library"
     context = {"books": books, "genres": genres, 'heading': heading}
-    print(books[0].users.all())
+
     return render(request, 'base/home.html', context)
 
 @login_required(login_url='login')
@@ -43,6 +43,7 @@ def reading(request, id):
 
 def adding(request, id):
     book = Book.objects.get(id=id)
+
     user = request.user
     user.books.add(book)
 
@@ -107,3 +108,26 @@ def register_page(request):
             messages.error(request, "An error occurred during registration")
 
     return render(request, 'base/login_register.html', {'form': form})
+
+
+def add_book(request):
+    genres = Genre.objects.all()
+    authors = Author.objects.all()
+
+    form = BookForm()
+    if request.method == "POST":
+        book_author = request.POST.get('author')
+        author, created = Author.objects.get_or_create(name=book_author)
+
+        book_genre = request.POST.get('genre')
+        genre, created = Genre.objects.get_or_create(name=book_genre)
+
+        form = BookForm(request.POST)
+
+        new_book = Book(picture=request.FILES['picture'], name=form.data['name'], author=author, description=form.data['description'], file=request.FILES['file'])
+
+        new_book.save()
+        new_book.genre.add(genre)
+        return redirect('home')
+
+    return render(request, 'base/add_book.html', {'form': form, 'genres': genres, 'authors': authors})

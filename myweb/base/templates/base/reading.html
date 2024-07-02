@@ -15,5 +15,5 @@
     </h3>
     <h4>{{ book.description }}</h4>
     {% load static %}
-    <embed src="{% static 'books' %}/{{ book.content }}" width="100%" height="10000" scrolling="auto"/>
+    <embed src="{% static book.file.url %}" width="100%" height="10000" scrolling="auto"/>
 {% endblock %}
