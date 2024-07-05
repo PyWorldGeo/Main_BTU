@@ -6,16 +6,20 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import MyUserCreationForm, BookForm
+from .seeder import seeder_func
+from django.contrib import messages
 
 # Create your views here.
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
+    seeder_func()
     #books = Book.objects.filter(genre__name__icontains=q) #i means insencitive to lower/high cases
     books = Book.objects.filter(Q(genre__name__icontains=q) | Q(name__icontains=q) | Q(description__icontains=q))
     #books = Book.objects.all()
     books = list(set(books))
     genres = Genre.objects.all()
     heading = "Library"
+
     context = {"books": books, "genres": genres, 'heading': heading}
 
     return render(request, 'base/home.html', context)
@@ -124,10 +128,17 @@ def add_book(request):
 
         form = BookForm(request.POST)
 
-        new_book = Book(picture=request.FILES['picture'], name=form.data['name'], author=author, description=form.data['description'], file=request.FILES['file'])
+        new_book = Book(picture=request.FILES['picture'], name=form.data['name'], author=author, description=form.data['description'], file=request.FILES['file'], creator=request.user)
 
         new_book.save()
         new_book.genre.add(genre)
         return redirect('home')
 
     return render(request, 'base/add_book.html', {'form': form, 'genres': genres, 'authors': authors})
+
+
+
+# def edit(request, id):
+#     book = Book.objects.get(id=id)
+#     form = BookForm(instance=book)
+#     return render(request, 'base/edit_book.html', {'form': form})
