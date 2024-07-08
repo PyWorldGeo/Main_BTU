@@ -47,10 +47,14 @@
                         <a href="{% url 'reading' book.id %}" target=”_blank” class="btn btn-primary">Read</a>
                         {% if request.user.is_authenticated %}
                             {% if book in request.user.books.all %}
-                                <a href="{% url 'delete' book.id %}" target=”_blank” class="btn btn-primary">Delete</a>
+                                <a href="{% url 'delete' book.id %}" target=”_blank” class="btn btn-primary">Delete Relationship</a>
                             {% else %}
                                 <a href="{% url 'adding' book.id %}" target=”_blank” class="btn btn-primary">Add</a>
                             {% endif %}
+                            {% if request.user == book.creator %}
+                                <a href="{% url 'delete_book' book.id %}" target=”_blank” class="btn btn-primary">Delete Book</a>
+                            {% endif %}
+
 
                         {% endif %}
                       </div>

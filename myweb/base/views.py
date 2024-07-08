@@ -16,7 +16,7 @@ def home(request):
     #books = Book.objects.filter(genre__name__icontains=q) #i means insencitive to lower/high cases
     books = Book.objects.filter(Q(genre__name__icontains=q) | Q(name__icontains=q) | Q(description__icontains=q))
     #books = Book.objects.all()
-    books = list(set(books))
+    books = list(dict.fromkeys(books))
     genres = Genre.objects.all()
     heading = "Library"
 
@@ -138,7 +138,13 @@ def add_book(request):
 
 
 
-# def edit(request, id):
-#     book = Book.objects.get(id=id)
-#     form = BookForm(instance=book)
-#     return render(request, 'base/edit_book.html', {'form': form})
+
+def delete_book(request, id):
+    book = Book.objects.get(id=id)
+
+    if request.method == "POST":
+        book.picture.delete()
+        book.file.delete()
+        book.delete()
+        return redirect('home')
+    return render(request, 'base/delete.html', {'obj': book})

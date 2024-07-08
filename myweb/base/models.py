@@ -29,7 +29,7 @@ class Book(models.Model):
     created = models.DateTimeField(auto_now_add=True)  # when created
 
     class Meta:
-        ordering = ['-updated', '-created']
+        ordering = ['-name']
 
     def __str__(self):
         return f"{self.name} _ {self.author}"
