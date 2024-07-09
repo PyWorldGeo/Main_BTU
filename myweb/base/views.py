@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Book, User, Author, Genre
+from .models import Book, User, Author, Genre, Comment
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import MyUserCreationForm, BookForm
+from .forms import MyUserCreationForm, BookForm, UserForm
 from .seeder import seeder_func
 from django.contrib import messages
 
@@ -43,7 +43,16 @@ def profile(request, pk):
 
 def reading(request, id):
     book = Book.objects.get(id=id)
-    return render(request, 'base/reading.html', {'book': book})
+    book_comments = book.comment_set.all().order_by('-created')
+    if request.method == "POST":
+        comment = Comment.objects.create(
+            user=request.user,
+            book=book,
+            body=request.POST.get('body')
+        )
+
+
+    return render(request, 'base/reading.html', {'book': book, 'comments': book_comments})
 
 def adding(request, id):
     book = Book.objects.get(id=id)
@@ -130,9 +139,12 @@ def add_book(request):
 
         new_book = Book(picture=request.FILES['picture'], name=form.data['name'], author=author, description=form.data['description'], file=request.FILES['file'], creator=request.user)
 
-        new_book.save()
-        new_book.genre.add(genre)
-        return redirect('home')
+        if not (Book.objects.filter(file=new_book.file or Book.objects.filter(name=new_book.name))):
+            new_book.save()
+            new_book.genre.add(genre)
+            return redirect('home')
+        else:
+            messages.error(request, "Book Already Exists!")
 
     return render(request, 'base/add_book.html', {'form': form, 'genres': genres, 'authors': authors})
 
@@ -148,3 +160,25 @@ def delete_book(request, id):
         book.delete()
         return redirect('home')
     return render(request, 'base/delete.html', {'obj': book})
+
+
+@login_required(login_url='login')
+def update_user(request):
+    user = request.user
+    form = UserForm(instance=user)
+
+    if request.method == "POST":
+        form = UserForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile', pk=user.id)
+
+    return render(request, "base/update-user.html", {'form': form})
+
+def delete_comment(request, id):
+    comment = Comment.objects.get(id=id)
+    book = comment.book
+    if request.method == "POST":
+        comment.delete()
+        return redirect('reading', book.id)
+    return render(request, 'base/delete.html', {'obj': comment})
